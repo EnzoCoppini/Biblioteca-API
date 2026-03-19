@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 public record UsuarioRequest(
         @NotBlank(message = "Usuario é obrigatório")
-        @Length(min = 3, max = 100)
+        @Length(min = 3, max = 100, message = "Digite um nome com o Mínimo de três caracteres ou Máximo 100 caracteres")
         String nomeUsuario,
 
         @NotBlank(message = "Email é obrigatório")
