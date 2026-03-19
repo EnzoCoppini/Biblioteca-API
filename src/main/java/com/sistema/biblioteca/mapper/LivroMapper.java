@@ -48,9 +48,6 @@ public class LivroMapper {
         if (request.anoPublicacao() != null) {
             livro.setAnoPublicacao(request.anoPublicacao());
         }
-        if (request.quantidadeTotal() != null) {
-            livro.setQuantidadeTotal(request.quantidadeTotal());
-        }
     }
 
     public void updateEntityFromDto(LivroUpdateRequest request, Livro livro) {

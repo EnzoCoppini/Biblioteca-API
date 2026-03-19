@@ -1,7 +1,7 @@
 package com.sistema.biblioteca.mapper;
 
 import com.sistema.biblioteca.DTOs.request.UsuarioRequest;
-import com.sistema.biblioteca.DTOs.request.UsuarioUpdateRequest;
+import com.sistema.biblioteca.DTOs.request.patch.UsuarioPatchUpdate;
 import com.sistema.biblioteca.DTOs.response.UsuarioResponse;
 import com.sistema.biblioteca.entity.Usuario;
 import org.springframework.stereotype.Component;
@@ -23,12 +23,12 @@ public class UsuarioMapper {
                 usuario.getIdUsuario(),
                 usuario.getNomeUsuario(),
                 usuario.getEmailUsuario(),
-                usuario.getEmailUsuario(),
+                usuario.getTelefoneUsuario(),
                 usuario.isAtivo()
         );
     }
 
-    public void updateEntityFromPatch(UsuarioRequest request, Usuario usuario){
+    public void updateEntityFromPatch(UsuarioPatchUpdate request, Usuario usuario){
         if (request.nomeUsuario() != null){
             usuario.setNomeUsuario(request.nomeUsuario());
         }
@@ -43,7 +43,7 @@ public class UsuarioMapper {
         }
     }
 
-    public void updateEntityFromDto(UsuarioUpdateRequest updateRequest, Usuario usuario){
+    public void updateEntityFromDto(UsuarioRequest updateRequest, Usuario usuario){
         usuario.setNomeUsuario(updateRequest.nomeUsuario());
         usuario.setEmailUsuario(updateRequest.emailUsuario());
         usuario.setTelefoneUsuario(updateRequest.telefoneUsuario());
