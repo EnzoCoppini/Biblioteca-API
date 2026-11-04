@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca API - Painel de Controle</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app-container">
+
+  <!-- ========================================================================
+       SIDEBAR NAVIGATION
+       ======================================================================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="logo-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <span>Biblioteca API</span>
+      </div>
+      <button class="close-sidebar-btn" id="close-sidebar-btn" aria-label="Fechar menu lateral">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <a class="nav-item active" data-tab="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9"></rect>
+          <rect x="14" y="3" width="7" height="5"></rect>
+          <rect x="14" y="12" width="7" height="9"></rect>
+          <rect x="3" y="16" width="7" height="5"></rect>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <div class="nav-section-label">Gerenciamento</div>
+      <a class="nav-item" data-tab="livros">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+        <span>Livros</span>
+        <span class="nav-counter" id="nav-count-livros">0</span>
+      </a>
+
+      <a class="nav-item" data-tab="usuarios">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>Usuários</span>
+        <span class="nav-counter" id="nav-count-usuarios">0</span>
+      </a>
+
+      <a class="nav-item" data-tab="emprestimos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="M7 15h10"></path>
+          <path d="M7 9h6"></path>
+        </svg>
+        <span>Empréstimos</span>
+        <span class="nav-counter" id="nav-count-emprestimos">0</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="api-status-pill">
+        <span class="status-dot" id="api-status-dot"></span>
+        <span id="api-status-text">Backend Conectado</span>
+      </div>
+      <span style="font-size: 0.7rem; color: #475569;">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       MAIN WRAPPER & HEADER
+       ======================================================================== -->
+  <div class="main-wrapper">
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-toggle-btn" id="mobile-toggle-btn" aria-label="Abrir menu lateral">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="header-title-block">
+          <h1 id="page-title">Dashboard Geral</h1>
+          <p id="page-subtitle">Visão unificada do acervo, membros e circulação de livros</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="backend-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span id="current-date-badge">Carregando...</span>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btn-refresh-all" title="Recarregar todos os dados da API">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Atualizar</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ========================================================================
+         MAIN BODY CONTENT TABS
+         ======================================================================== -->
+    <main class="content-body">
+
+      <!-- TAB 1: DASHBOARD -->
+      <section class="tab-pane active" id="pane-dashboard">
+        <!-- Stats Cards Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon icon-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">Total de Livros</div>
+              <div class="stat-value" id="stat-total-livros">0</div>
+              <div class="stat-meta">
+                <span id="stat-exemplares-disp">0</span> exemplares disponíveis
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon icon-emerald">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">Usuários Cadastrados</div>
+              <div class="stat-value" id="stat-total-usuarios">0</div>
+              <div class="stat-meta">
+                <span id="stat-usuarios-ativos">0</span> usuários ativos
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon icon-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="M7 15h10"></path>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">Empréstimos Ativos</div>
+              <div class="stat-value" id="stat-emprestimos-ativos">0</div>
+              <div class="stat-meta">
+                Livros em circulação
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon icon-amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">Em Atraso</div>
+              <div class="stat-value" id="stat-emprestimos-atrasados">0</div>
+              <div class="stat-meta" id="stat-atraso-meta">
+                Devoluções pendentes
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions Bar -->
+        <div class="quick-actions-bar">
+          <div class="quick-actions-info">
+            <h2>Ações Rápidas</h2>
+            <p>Cadastre novos itens ou registre operações com um único clique</p>
+          </div>
+          <div class="quick-actions-btns">
+            <button class="btn btn-primary" id="btn-quick-novo-emprestimo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Novo Empréstimo</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-novo-livro">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Novo Livro</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-quick-novo-usuario">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Novo Usuário</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Layout: Recent Loans & Book Stock Overview -->
+        <div class="dashboard-grid">
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h3>Empréstimos em Circulação</h3>
+                <span class="badge-count" id="dash-emprestimos-count">0</span>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="navigateToTab('emprestimos')">Ver todos</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Livro</th>
+                    <th>Usuário</th>
+                    <th>Devolução Prevista</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-recent-loans-tbody">
+                  <tr>
+                    <td colspan="5" class="empty-state">
+                      <div class="loading-spinner"></div>
+                      <p>Carregando empréstimos...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <h3>Disponibilidade do Acervo</h3>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="navigateToTab('livros')">Gerenciar</button>
+            </div>
+            <div class="modal-body" id="dash-books-summary" style="padding: 1.25rem;">
+              <div class="loading-spinner"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: LIVROS -->
+      <section class="tab-pane" id="pane-livros">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>Catálogo de Livros</h2>
+              <span class="badge-count" id="livros-total-badge">0</span>
+            </div>
+            <div class="toolbar">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-livros" class="search-input" placeholder="Buscar por título, autor, ISBN...">
+              </div>
+              <select id="filter-genero" class="filter-select">
+                <option value="">Todos os Gêneros</option>
+              </select>
+              <select id="filter-disponibilidade" class="filter-select">
+                <option value="">Todos os Estoques</option>
+                <option value="disponivel">Disponíveis</option>
+                <option value="esgotado">Esgotados</option>
+              </select>
+              <button class="btn btn-primary" id="btn-abrir-novo-livro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Cadastrar Livro</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">ID</th>
+                  <th>Título & Autor</th>
+                  <th>Gênero</th>
+                  <th>Ano</th>
+                  <th>ISBN</th>
+                  <th>Estoque Total</th>
+                  <th>Disponível</th>
+                  <th>Status</th>
+                  <th style="text-align: right; min-width: 130px;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="livros-table-body">
+                <tr>
+                  <td colspan="9" class="empty-state">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando livros...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: USUÁRIOS -->
+      <section class="tab-pane" id="pane-usuarios">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>Membros e Leitores</h2>
+              <span class="badge-count" id="usuarios-total-badge">0</span>
+            </div>
+            <div class="toolbar">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-usuarios" class="search-input" placeholder="Buscar por nome, e-mail, telefone...">
+              </div>
+              <select id="filter-usuario-status" class="filter-select">
+                <option value="">Todos os Status</option>
+                <option value="ativo">Somente Ativos</option>
+                <option value="inativo">Somente Inativos</option>
+              </select>
+              <button class="btn btn-primary" id="btn-abrir-novo-usuario">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Cadastrar Usuário</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">ID</th>
+                  <th>Nome Completo</th>
+                  <th>E-mail</th>
+                  <th>Telefone</th>
+                  <th>Status de Acesso</th>
+                  <th style="text-align: right; min-width: 120px;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="usuarios-table-body">
+                <tr>
+                  <td colspan="6" class="empty-state">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando usuários...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: EMPRÉSTIMOS -->
+      <section class="tab-pane" id="pane-emprestimos">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <h2>Registro de Empréstimos</h2>
+              <span class="badge-count" id="emprestimos-total-badge">0</span>
+            </div>
+            <div class="toolbar">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="search-emprestimos" class="search-input" placeholder="Buscar por livro ou leitor...">
+              </div>
+              <select id="filter-emprestimo-status" class="filter-select">
+                <option value="">Todos os Status</option>
+                <option value="EM_ANDAMENTO">Em Andamento</option>
+                <option value="ATRASADO">Atrasados</option>
+                <option value="DEVOLVIDO">Devolvidos</option>
+              </select>
+              <button class="btn btn-primary" id="btn-abrir-novo-emprestimo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Novo Empréstimo</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">ID</th>
+                  <th>Livro</th>
+                  <th>Usuário</th>
+                  <th>Data Empréstimo</th>
+                  <th>Devolução Prevista</th>
+                  <th>Devolução Real</th>
+                  <th>Status</th>
+                  <th style="text-align: right; min-width: 140px;">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="emprestimos-table-body">
+                <tr>
+                  <td colspan="8" class="empty-state">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando empréstimos...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ========================================================================
+     MODALS
+     ======================================================================== -->
+
+<!-- Modal: Cadastrar / Editar Livro -->
+<div class="modal-backdrop" id="modal-livro">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="modal-livro-title">Cadastrar Novo Livro</h3>
+      <button class="modal-close-btn" data-close-modal="modal-livro">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <form id="form-livro">
+      <input type="hidden" id="livro-form-id">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="livro-titulo">Título da Obra <span class="required">*</span></label>
+          <input type="text" id="livro-titulo" class="form-input" placeholder="Ex: Dom Casmurro" required maxlength="100">
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="livro-autor">Autor <span class="required">*</span></label>
+            <input type="text" id="livro-autor" class="form-input" placeholder="Ex: Machado de Assis" required maxlength="100">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="livro-genero">Gênero <span class="required">*</span></label>
+            <input type="text" id="livro-genero" class="form-input" placeholder="Ex: Romance, Ficção..." required maxlength="50">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="livro-ano">Ano de Publicação <span class="required">*</span></label>
+            <input type="number" id="livro-ano" class="form-input" placeholder="Ex: 1899" required min="1" max="2100">
+          </div>
+          <div class="form-group" id="livro-isbn-group">
+            <label class="form-label" for="livro-isbn">ISBN <span class="required">*</span></label>
+            <input type="text" id="livro-isbn" class="form-input" placeholder="Ex: 978-8535914849" required>
+            <span class="form-help" id="livro-isbn-help">Identificador único do livro</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="livro-quantidade">Quantidade Total de Exemplares <span class="required">*</span></label>
+          <input type="number" id="livro-quantidade" class="form-input" placeholder="Ex: 5" required min="1">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="modal-livro">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-salvar-livro">Salvar Livro</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Edição Parcial Livro (PATCH) -->
+<div class="modal-backdrop" id="modal-patch-livro">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Atualização Parcial do Livro (PATCH)</h3>
+      <button class="modal-close-btn" data-close-modal="modal-patch-livro">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <form id="form-patch-livro">
+      <input type="hidden" id="patch-livro-id">
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Altere somente os campos necessários. Os campos vazios não serão modificados no servidor.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="patch-livro-titulo">Título</label>
+          <input type="text" id="patch-livro-titulo" class="form-input" placeholder="Manter atual">
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="patch-livro-autor">Autor</label>
+            <input type="text" id="patch-livro-autor" class="form-input" placeholder="Manter atual">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="patch-livro-genero">Gênero</label>
+            <input type="text" id="patch-livro-genero" class="form-input" placeholder="Manter atual">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="patch-livro-ano">Ano de Publicação</label>
+            <input type="number" id="patch-livro-ano" class="form-input" placeholder="Manter atual" min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="patch-livro-quantidade">Nova Quantidade Total</label>
+            <input type="number" id="patch-livro-quantidade" class="form-input" placeholder="Manter atual" min="1">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="modal-patch-livro">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Aplicar PATCH</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Cadastrar / Editar Usuário -->
+<div class="modal-backdrop" id="modal-usuario">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="modal-usuario-title">Cadastrar Novo Usuário</h3>
+      <button class="modal-close-btn" data-close-modal="modal-usuario">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <form id="form-usuario">
+      <input type="hidden" id="usuario-form-id">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="usuario-nome">Nome Completo <span class="required">*</span></label>
+          <input type="text" id="usuario-nome" class="form-input" placeholder="Ex: Maria Oliveira" required minlength="3" maxlength="100">
+          <span class="form-help">Mínimo de 3 e máximo de 100 caracteres</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="usuario-email">E-mail <span class="required">*</span></label>
+          <input type="email" id="usuario-email" class="form-input" placeholder="Ex: maria.oliveira@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="usuario-telefone">Telefone <span class="required">*</span></label>
+          <input type="text" id="usuario-telefone" class="form-input" placeholder="Ex: (11) 98765-4321" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-switch">
+            <input type="checkbox" id="usuario-ativo" checked>
+            <span class="form-label" style="margin-bottom: 0;">Usuário Ativo (habilitado para empréstimos)</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="modal-usuario">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-salvar-usuario">Salvar Usuário</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Novo Empréstimo -->
+<div class="modal-backdrop" id="modal-emprestimo">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3>Registrar Novo Empréstimo</h3>
+      <button class="modal-close-btn" data-close-modal="modal-emprestimo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <form id="form-emprestimo">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="emp-usuario-select">Selecione o Usuário <span class="required">*</span></label>
+          <select id="emp-usuario-select" class="form-select" required>
+            <option value="">Carregando usuários ativos...</option>
+          </select>
+          <span class="form-help">Apenas usuários com status ativo podem retirar livros</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp-livro-select">Selecione o Livro <span class="required">*</span></label>
+          <select id="emp-livro-select" class="form-select" required>
+            <option value="">Carregando livros disponíveis...</option>
+          </select>
+          <span class="form-help">Livros sem exemplares disponíveis não podem ser selecionados</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp-data-prevista">Data Prevista para Devolução <span class="required">*</span></label>
+          <input type="date" id="emp-data-prevista" class="form-input" required>
+          <span class="form-help">Recomendado: 14 dias a partir de hoje</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="modal-emprestimo">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btn-confirmar-emprestimo">Concluir Empréstimo</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Confirmação Genérica (Devolução / Exclusão) -->
+<div class="modal-backdrop" id="modal-confirm">
+  <div class="modal-dialog" style="max-width: 440px;">
+    <div class="modal-body confirm-box">
+      <div class="confirm-icon" id="confirm-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <h4 id="confirm-title">Tem certeza?</h4>
+      <p id="confirm-message">Esta ação não poderá ser desfeita.</p>
+    </div>
+    <div class="modal-footer" style="justify-content: center;">
+      <button type="button" class="btn btn-secondary" id="confirm-btn-cancel" data-close-modal="modal-confirm">Cancelar</button>
+      <button type="button" class="btn btn-danger" id="confirm-btn-action">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notifications Container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- Scripts -->
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
+

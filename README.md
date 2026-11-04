@@ -89,13 +89,16 @@ O projeto utiliza validações com **Jakarta Validation**, como por exemplo:
 - `GET /usuarios`
 - `GET /usuarios/{id}`
 - `PUT /usuarios/{id}`
+- `PATCH /usuarios/{id}`
 - `DELETE /usuarios/{id}`
 
 ### Livros
 - `POST /livros`
 - `GET /livros`
 - `GET /livros/{id}`
+- `GET /livros/titulo/{titulo}`
 - `PUT /livros/{id}`
+- `PATCH /livros/{id}`
 - `DELETE /livros/{id}`
 
 ### Empréstimos
@@ -104,4 +107,50 @@ O projeto utiliza validações com **Jakarta Validation**, como por exemplo:
 - `GET /emprestimos/{id}`
 - `PATCH /emprestimos/{id}/devolucao`
 - `DELETE /emprestimos/{id}`
+
+---
+
+## 💻 Interface Frontend (Dashboard Web)
+
+A aplicação conta com um frontend completo, moderno e responsivo desenvolvido com **HTML5**, **CSS3** e **JavaScript Vanilla (Fetch API)**, sem frameworks pesados:
+
+- **Dashboard Principal**: Indicadores de acervo (total de livros e exemplares disponíveis), leitores ativos, empréstimos em andamento e em atraso, ações rápidas e tabela de circulação recente.
+- **Gerenciamento de Livros**: Catálogo em tabela moderna, busca em tempo real (título, autor, ISBN), filtros por gênero e disponibilidade, modais de cadastro completo (POST), edição completa (PUT) e atualização parcial (PATCH).
+- **Gerenciamento de Usuários**: Tabela de membros com alternância de status ativo/inativo em um clique, modais de cadastro e edição.
+- **Controle de Empréstimos**: Formulário inteligente com seleção de leitores ativos e livros em estoque, cálculo de prazo, registro de devolução em 1 clique (com ajuste automático de estoque e status) e exclusão.
+- **Notificações Flutuantes (Toasts)**: Feedback imediato de operações e exibição detalhada de validações vindas do backend.
+- **Totalmente Integrado**: Os arquivos estáticos estão hospedados diretamente no Spring Boot (`src/main/resources/static/`).
+
+---
+
+## 🏃 Como Executar a Aplicação Localmente
+
+### 1. Pré-requisitos
+- **Java 21** (JDK instalado e configurado, ou Eclipse Temurin 21)
+- **Maven** (o wrapper `./mvnw` já está incluso no repositório)
+
+### 2. Executar com perfil padrão (H2 em memória - sem necessidade de banco externo instalado)
+Para testar imediatamente sem precisar configurar banco de dados externo:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Acesse a interface no navegador em:
+👉 **[http://localhost:8080](http://localhost:8080)**
+
+Console do H2 (se desejar inspecionar o banco):
+👉 **[http://localhost:8080/h2-console](http://localhost:8080/h2-console)**
+- JDBC URL: `jdbc:h2:mem:bibliotecadb`
+- User Name: `sa`
+- Password: *(em branco)*
+
+### 3. Executar com PostgreSQL
+Caso possua o serviço do PostgreSQL rodando localmente na porta 5432:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
+```
+*(Certifique-se de que o banco `db_biblioteca_dev` existe e as credenciais em `application-postgres.properties` correspondem ao seu ambiente).*
+
 
